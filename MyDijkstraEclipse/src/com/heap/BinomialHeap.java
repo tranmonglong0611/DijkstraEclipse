@@ -27,7 +27,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 
 	/************ Them mot node moi vao ***************/
 	public void insert(int id, int value) {
-		if (value >= 0) {
+		if (id >=0 ) {
 			BinomialHeapNode temp = new BinomialHeapNode(id, value);
 			if (Nodes == null) {
 				Nodes = temp;
@@ -83,7 +83,8 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 				if ((Nodes != null) && (fakeNode == null)) {
 					size = Nodes.getSize();
 				} else {
-					unionNodes(fakeNode.reverse(null));
+					BinomialHeapNode a = fakeNode.reverse(null);
+					unionNodes(a);
 					size = Nodes.getSize();
 				}
 			}
@@ -102,8 +103,6 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 			return;
 		}
 
-		if (temp == null)
-			return;
 		temp.info = new_value;
 		BinomialHeapNode tempParent = temp.parent;
 
@@ -120,7 +119,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		}
 	}
 
-	private void merge(BinomialHeapNode binHeap) {
+	/*private void merge(BinomialHeapNode binHeap) {
 		BinomialHeapNode temp1 = Nodes, temp2 = binHeap;
 
 		while ((temp1 != null) && (temp2 != null)) {// sau khi xong se thang
@@ -166,8 +165,59 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 			temp1.sibling = temp2;
 		} else {
 		}
-	}
+	}*/
 
+	
+	private void merge(BinomialHeapNode binHeap) {
+		{
+	         BinomialHeapNode a = Nodes;
+	         BinomialHeapNode b = binHeap;
+
+	        if (a == null) {
+	        	Nodes = b;
+	            return;
+	        } else if (b == null) {
+	        	Nodes = a;
+	        	return;
+	        }
+
+	        BinomialHeapNode rootListHead;
+	        BinomialHeapNode rootListTail;
+
+	        // Initialize rootListHead and rootListTail.
+	        if (a.degree < b.degree) {
+	            rootListHead = a;
+	            rootListTail = a;
+	            a = a.sibling;
+	        } else {
+	            rootListHead = b;
+	            rootListTail = b;
+	            b = b.sibling;
+	        }
+
+	        while (a != null && b != null) {
+	            if (a.degree < b.degree) {
+	                rootListTail.sibling = a;
+	                rootListTail = a;
+	                a = a.sibling;
+	            } else {
+	                rootListTail.sibling = b;
+	                rootListTail = b;
+	                b = b.sibling;
+	            }
+	        }
+
+	        if (a != null) {
+	            // Just append the rest.
+	            rootListTail.sibling = a;
+	        } else {
+	            // Just append the rest.
+	            rootListTail.sibling = b;
+	        }
+
+	        Nodes =  rootListHead;
+	    }
+	}
 	// ham gan z lam con cua y.(y va z co degree = nhau nen gan chung vao voi
 	// nhau
 	private void linkNodes(BinomialHeapNode y, BinomialHeapNode z) {
@@ -183,11 +233,12 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		BinomialHeapNode prevTemp = null, temp = Nodes, nextTemp = Nodes.sibling;
 
 		/*
-		 * chia ra tat ca 4 truong hop 1.temp va nextTemp co degree khac nhau
+		 * chia ra tat ca 4 truong hop 
+		 * 1.temp va nextTemp co degree khac nhau
 		 * 2.temp va nextTemp va nextTemp.sibling(3 nut canh nhau) co degree
-		 * bang nhau 3.temp va nextTemp co degree = nhau va khac voi
-		 * nextTemp.sibling(temp.info < nextTemp.info 4.Giong het truong hop 3
-		 * chi khac temp.info > nextTemp.info
+		 * bang nhau 
+		 * 3.temp va nextTemp co degree = nhau va khac voi nextTemp.sibling(temp.info < nextTemp.info 
+		 * 4.Giong het truong hop 3 chi khac temp.info > nextTemp.info
 		 */
 
 		while (nextTemp != null) {
@@ -219,7 +270,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		return Nodes.findMinNode().info;
 	}
 
-	public void m(int value) {
+	public void delete(int value) {
 		if ((Nodes != null) && (Nodes.findANodeWithKey(value) != null)) {
 			decreaseNodeInfo(value, findMinimum() - 1);
 			extractMin();
@@ -247,7 +298,11 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		for (int i = 0; i < distance.length; i++) {
 			this.insert(i, distance[i]);
 		}
+	}
 
+	@Override
+	public int getSize() {
+		return  size;
 	}
 
 }

@@ -6,5 +6,6 @@ public interface HeapInterface<T extends NodeInterface> {
 	public void decreaseNodeInfo(int id, int info);
 	public void initializeData(int[] distance);
 	public boolean isEmpty();
+	public int getSize();
 }
 

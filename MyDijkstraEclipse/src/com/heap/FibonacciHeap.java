@@ -322,4 +322,9 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 		}
 		
 	}
+
+	@Override
+	public int getSize() {
+		return size;
+	}
 }

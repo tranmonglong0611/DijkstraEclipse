@@ -4,7 +4,7 @@ package com.heap;
 public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc là nút nhỏ nhất(nút cha mẹ phải bé hơn nút con
     public HeapNode[] node;
     public int numOfNode = 0;
-    private final int MAX_INT = 9999;
+    private final int MAX_INT = 99999;
    
     public Heap() {
     	
@@ -15,11 +15,6 @@ public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc l�
     }
    
     public void insert(int id, int info) {
-        numOfNode++ ;
-        node[numOfNode-1] = new HeapNode(id, MAX_INT);//gan cho no 1 gia tri info cuc lon
-        
-        decreaseNodeInfo(id, info);//sau do thuc hien cau lenh thay doi gia tri info de dua heapNode do ve dung vi tri
-        
     }
     
     
@@ -68,8 +63,8 @@ public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc l�
     public void decreaseNodeInfo(int idChange, int info) {
         //tăng giá trị info lên
     	int i = 0;
-    	for(i=0; i<numOfNode; i++) {
-    		if (node[i].id == idChange)
+    	for( i = 0; i < numOfNode; i++) {
+    		if ( node[i].id == idChange)
     			break;
     	}
         if (info < node[i].info) {//giam gia tri node idChange => idChange co the be hon nut cha cua no => phai xu ly tu nut idChange len tren
@@ -81,7 +76,7 @@ public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc l�
             return;
             
         }
-        if (info > node[i].info) { //tang gia tri node idChange => idChange co the lon hon nut con cua no => Minheapify(xu ly tu nut idChange xuong duoi)
+        if ( info > node[i].info) { //tang gia tri node idChange => idChange co the lon hon nut con cua no => Minheapify(xu ly tu nut idChange xuong duoi)
             System.out.println("Error!!! Gia tri nut moi lon hon gia tri nut cu");
         }       
                
@@ -94,6 +89,8 @@ public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc l�
     	System.out.println();
     }
 
+    
+    //O(a.length) = 0(numOfVertex)
 	@Override
 	public void initializeData(int[] a) {
 		numOfNode = a.length;
@@ -105,5 +102,12 @@ public class Heap implements HeapInterface<HeapNode> {//heap với nút gốc l�
     	
     	buildMinHeap();
 	}
+
+	@Override
+	public int getSize() {
+		return numOfNode;
+	}
+	
+	
 }
 

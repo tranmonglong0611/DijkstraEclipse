@@ -14,7 +14,7 @@ import java.util.Scanner;
  * @author long
  */
 public class Dijkstra {
-	private final int MAX_INT = 9999;
+	private final int MAX_INT = 99999;
 	private HeapInterface heap;
 	private NodeInterface node;
 	
@@ -22,7 +22,8 @@ public class Dijkstra {
 	private void heapUsing(Graph graph) {
 		heap.initializeData(graph.distance);
 		while (!heap.isEmpty()) {
-
+			
+			System.out.println(heap.getSize());
 			node = heap.extractMin();// dua cai Node co gia tri nho
 												// nhat trong heap ra
 			if (node == null)
@@ -32,11 +33,9 @@ public class Dijkstra {
 											// duoc duong di ngan nhat den
 											// source
 
-			if (graph.getNeighborNode(minNode) == null) {
-				continue;
-			}
-
-			for (int neighborNode : graph.getNeighborNode(minNode)) {
+			int a[] = graph.getNeighborNode(minNode);
+			if ( a == null ) continue;
+			for (int neighborNode : a) {
 
 				if (graph.foundMinPath[neighborNode])
 					continue;// neu da tim thay duong di ngan nhat thi bo qua
@@ -60,28 +59,6 @@ public class Dijkstra {
 
 	
 
-	private String printMinPath(Graph graph, int destination) {// in ra duong di ngan nhat tu
-												// sourceNode den destination
-		String a = "" ;
-		if (destination == graph.sourceNode) {
-			a = a + graph.sourceNode;
-			return a;
-		}
-
-		int index = destination;
-		if (graph.distance[index] == MAX_INT) {
-			a = a + index + " can't connect to " + graph.sourceNode;  
-			return a; 
-		}
-		
-		while (index != graph.sourceNode) {
-			a = a + index + " <- ";
-			index = graph.previousNode[index];
-		}
-
-		a = a + graph.sourceNode;
-		return a;
-	}
 
 	public String printDijkstra(Graph graph) {
 		String a = new String();
@@ -97,20 +74,44 @@ public class Dijkstra {
 	
 	public static void main(String[] args) {
 		try {
-			Graph graph = new Graph(50, 7);
+			Graph graph = new Graph(100000, 8);
 			graph.sourceNode = 1;
 			graph.setInitial();
 			graph.print();
+			long a1 = System.currentTimeMillis();
 			Dijkstra dijkstraTest = new Dijkstra(graph, new BinomialHeap());
+			long a2 = System.currentTimeMillis();
 
-			String a = dijkstraTest.printDijkstra(graph);
-			System.out.print(a);
+			System.out.println(dijkstraTest.printDijkstra(graph));
+			System.out.println(a2 - a1);
 		} catch (InputMismatchException ex) {
-			System.out.println("Loi 1 cmnr");
+			System.out.println("Loi 1");
 		} catch (FileNotFoundException ex) {
-			System.out.println("Loi 2 cmnr");
+			System.out.println("Loi 2");
 		}
 
 	}
 
+	private String printMinPath(Graph graph, int destination) {// in ra duong di ngan nhat tu
+		// sourceNode den destination
+		String a = "" ;
+		if (destination == graph.sourceNode) {
+			a = a + graph.sourceNode;
+			return a;
+		}
+		
+		int index = destination;
+		if (graph.distance[index] == MAX_INT) {
+			a = a + index + " can't connect to " + graph.sourceNode;  
+			return a; 
+		}
+		
+		while (index != graph.sourceNode) {
+			a = a + index + " <- ";
+			index = graph.previousNode[index];
+		}
+		
+		a = a + graph.sourceNode;
+		return a;
+	}
 }
