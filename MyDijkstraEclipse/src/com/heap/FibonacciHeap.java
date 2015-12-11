@@ -6,25 +6,17 @@ import java.util.List;
 public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 	private FibonacciHeapNode root;// cũng chính là minNode
 	private int size;
-
+	private FibonacciHeapNode[] position;
 
 	public FibonacciHeap() {
 		root = null;
 		size = 0;
 	}
 
-	public boolean isEmpty() {
-		return root == null;
-	}
-
-	public void clear() {
-		root = null;
-		size = 0;
-	}
-
 	public void insert(int id, int info) {
 		FibonacciHeapNode node = new FibonacciHeapNode(id, info);
-
+		position[id] = node;
+		
 		if (root != null) {
 			node.left = root;
 			node.right = root.right;
@@ -41,15 +33,18 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 		}
 		size++;
 	}
-
-	public void display() {
-		System.out.print("\nHeap = ");
-		FibonacciHeapNode ptr = root;
-		if (ptr == null) {
-			System.out.print("\nEmpty\n");
-		}
-	}
 	
+	@Override
+	public void initializeData(int[] distance) {
+		root = null;
+		size = 0;
+		position = new FibonacciHeapNode[200000];
+		for (int i=0; i<distance.length; i++) {
+			this.insert(i, distance[i]);
+		}
+		
+	}
+
 	public FibonacciHeapNode extractMin() {
 		FibonacciHeapNode z = root;
 
@@ -97,7 +92,7 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 	}
 
 	public void decreaseNodeInfo(int id, int newValue) {
-		FibonacciHeapNode h = root.findANodeWithId(id);
+		FibonacciHeapNode h = position[id];
 	
 		if (newValue > h.info) {
 			System.out.println("New Value > Value Hien tai");;
@@ -117,13 +112,21 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
+	@Override
+	public int getSize() {
+		return size;
+	}
+	public boolean isEmpty() {
+		return root == null;
+	}
+
+	public void clear() {
+		root = null;
+		size = 0;
+	}
+
+
+
 	
 	
 	protected void cascadingCut(FibonacciHeapNode y) {
@@ -172,6 +175,7 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 		//set x.mark to false
 		x.mark = false;
 	}
+	
 	private void consolidate() {
 		int arraySize = size;
 
@@ -313,18 +317,13 @@ public class FibonacciHeap implements HeapInterface<FibonacciHeapNode>{
 		return h;
 	}
 
-	@Override
-	public void initializeData(int[] distance) {
-		root = null;
-		size = 0;
-		for (int i=0; i<distance.length; i++) {
-			this.insert(i, distance[i]);
-		}
-		
-	}
+//	public void display() {
+//		System.out.print("\nHeap = ");
+//		FibonacciHeapNode ptr = root;
+//		if (ptr == null) {
+//			System.out.print("\nEmpty\n");
+//		}
+//	}
+//	
 
-	@Override
-	public int getSize() {
-		return size;
-	}
 }

@@ -1,5 +1,6 @@
 package com.heap;
 
 public interface NodeInterface {
-	int getId();
+	public int getId();
+	public int getInfo();
 }

@@ -1,34 +1,26 @@
 
 package com.heap;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 	private BinomialHeapNode Nodes;
 	private int size;
-
+	BinomialHeapNode[] position;//position[i] chính là binomialHeapNode có id = i
+	
+	
 	public BinomialHeap() {
 		Nodes = null;
 		size = 0;
 	}
 
-	public boolean isEmpty() {
-		return Nodes == null;
-	}
-
-	public int getsize() {
-		return size;
-	}
-
-	public void makeEmpty() {
-		Nodes = null;
-		size = 0;
-	}
 
 	/************ Them mot node moi vao ***************/
 	public void insert(int id, int value) {
 		if (id >=0 ) {
-			BinomialHeapNode temp = new BinomialHeapNode(id, value);
+			position[id] = new BinomialHeapNode(id, value);
+			BinomialHeapNode temp = position[id];
 			if (Nodes == null) {
 				Nodes = temp;
 				size = 1;
@@ -41,9 +33,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		}
 	}
 
-	/**************************
-	 * Ham giup dua ra cai Node nho nhat
-	 **********************/
+	/***********Ham giup dua ra cai Node nho nhat**********/
 	public BinomialHeapNode extractMin() {
 		if (Nodes == null) {
 			return null;
@@ -59,9 +49,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 
 		if (prevTemp == null) {
 			Nodes = temp.sibling;
-		}
-
-		else {
+		}else {
 			prevTemp.sibling = temp.sibling;
 		}
 
@@ -96,7 +84,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 	/************ Ham giam gia tri cua Node id xuong con value **********/
 	public void decreaseNodeInfo(int id, int new_value) {
 
-		BinomialHeapNode temp = Nodes.findANodeWithId(id);
+		BinomialHeapNode temp = position[id];
 		if (temp == null) return;
 		if (temp.info < new_value) {
 			System.out.println("Error!!!Node moi co gia tri lon hon Node cu");
@@ -107,66 +95,46 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		BinomialHeapNode tempParent = temp.parent;
 
 		while ((tempParent != null) && (temp.info < tempParent.info)) {
+			
+			position[temp.id] = tempParent;
+			position[tempParent.id] = temp;
+			
 			int z = temp.info;
 			int z1 = temp.id;// doi ca id va info cua 2 nut con va nut cha
+			
 			temp.info = tempParent.info;
 			temp.id = tempParent.id;
+			
 			tempParent.info = z;
 			tempParent.id = z1;
 
+			
+			
 			temp = tempParent;
 			tempParent = tempParent.parent;
 		}
 	}
 
-	/*private void merge(BinomialHeapNode binHeap) {
-		BinomialHeapNode temp1 = Nodes, temp2 = binHeap;
-
-		while ((temp1 != null) && (temp2 != null)) {// sau khi xong se thang
-													// temp1->temp2->temp1.sibling
-													// || temp2.sibling
-			if (temp1.degree == temp2.degree) {
-				BinomialHeapNode tmp = temp2;
-				temp2 = temp2.sibling; // lenh gan nay de tiep tuc vong lap voi
-										// temp2.sibling
-				tmp.sibling = temp1.sibling;
-				temp1.sibling = tmp;
-				temp1 = tmp.sibling; // lenh gan nay de tiep tuc vong lap voi
-										// tmp1.sibling
-			} else {
-				if (temp1.degree < temp2.degree) {
-					if ((temp1.sibling == null) || (temp1.sibling.degree > temp2.degree)) {
-						BinomialHeapNode tmp = temp2;
-						temp2 = temp2.sibling;
-						tmp.sibling = temp1.sibling;
-						temp1.sibling = tmp;
-						temp1 = tmp.sibling;
-					} else {
-						temp1 = temp1.sibling;
-					}
-				} else {
-					BinomialHeapNode tmp = temp1;
-					temp1 = temp2;
-					temp2 = temp2.sibling;
-					temp1.sibling = tmp;
-					if (tmp == Nodes) {
-						Nodes = temp1;
-					} else {
-					}
-				}
-			}
+	@Override
+	public void initializeData(int[] distance) {
+		Nodes = null;
+		size = 0;
+		position = new BinomialHeapNode[200000];
+		
+		for (int i = 0; i < distance.length; i++) {
+			this.insert(i, distance[i]);
 		}
+	}
+	
+	@Override
+	public int getSize() {
+		return  size;
+	}
 
-		if (temp1 == null) {
-			temp1 = Nodes;
-			while (temp1.sibling != null) {
-				temp1 = temp1.sibling;
-			}
-			temp1.sibling = temp2;
-		} else {
-		}
-	}*/
-
+	@Override
+	public boolean isEmpty() {
+		return Nodes == null;
+	}
 	
 	private void merge(BinomialHeapNode binHeap) {
 		{
@@ -188,10 +156,13 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 	        if (a.degree < b.degree) {
 	            rootListHead = a;
 	            rootListTail = a;
+	            
 	            a = a.sibling;
+	            
 	        } else {
 	            rootListHead = b;
 	            rootListTail = b;
+	            
 	            b = b.sibling;
 	        }
 
@@ -199,10 +170,12 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 	            if (a.degree < b.degree) {
 	                rootListTail.sibling = a;
 	                rootListTail = a;
+	               
 	                a = a.sibling;
 	            } else {
 	                rootListTail.sibling = b;
 	                rootListTail = b;
+	                
 	                b = b.sibling;
 	            }
 	        }
@@ -221,7 +194,7 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 	// ham gan z lam con cua y.(y va z co degree = nhau nen gan chung vao voi
 	// nhau
 	private void linkNodes(BinomialHeapNode y, BinomialHeapNode z) {
-		z.parent = y;
+		z.parent = y;		
 		z.sibling = y.child;
 		y.child = z;
 		y.degree++;
@@ -247,6 +220,8 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 					|| ((nextTemp.sibling != null) && (nextTemp.sibling.degree == temp.degree))) {
 				prevTemp = temp;
 				temp = nextTemp;
+				
+				
 			} else {
 				// xu ly truong hop 3
 				if (temp.info <= nextTemp.info) {
@@ -266,43 +241,12 @@ public class BinomialHeap implements HeapInterface<BinomialHeapNode> {
 		}
 	}
 
-	public int findMinimum() {
-		return Nodes.findMinNode().info;
-	}
+//	public void delete(int value) {
+//		if ((Nodes != null) && (Nodes.findANodeWithKey(value) != null)) {
+//			decreaseNodeInfo(value, findMinimum() - 1);
+//			extractMin();
+//		}
+//	}
 
-	public void delete(int value) {
-		if ((Nodes != null) && (Nodes.findANodeWithKey(value) != null)) {
-			decreaseNodeInfo(value, findMinimum() - 1);
-			extractMin();
-		}
-	}
-
-	public void displayHeap() {
-		System.out.print("\nHeap : ");
-		displayHeap(Nodes);
-		System.out.println("\n");
-	}
-
-	private void displayHeap(BinomialHeapNode r) {
-		if (r != null) {
-			displayHeap(r.child);
-			System.out.print(r.info + " ");
-			displayHeap(r.sibling);
-		}
-	}
-
-	@Override
-	public void initializeData(int[] distance) {
-		Nodes = null;
-		size = 0;
-		for (int i = 0; i < distance.length; i++) {
-			this.insert(i, distance[i]);
-		}
-	}
-
-	@Override
-	public int getSize() {
-		return  size;
-	}
 
 }

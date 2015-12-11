@@ -1,19 +1,22 @@
 package com.heap;
 
-public class Array implements HeapInterface<HeapNode> {
+public class Array implements HeapInterface<ArrayNode> {
 
-	HeapNode[] node;
+	ArrayNode[] node;
 	private int numOfNode = 0;
 	private static final int MAX_INT = 99999;
-
+	private ArrayNode[] position;
+	
 	@Override
 	public void insert(int id, int info) {
-
+		node[numOfNode] = new ArrayNode(id, info);
+		position[id] = node[numOfNode];
+		numOfNode++;
 	}
 
 	@Override
-	public HeapNode extractMin() {
-		HeapNode temp = null;
+	public ArrayNode extractMin() {
+		ArrayNode temp = null;
 		for (int i = 0; i < numOfNode; i++) {
 			if (node[i].info < MAX_INT) {
 				temp = node[i];
@@ -27,35 +30,35 @@ public class Array implements HeapInterface<HeapNode> {
 
 	@Override
 	public void decreaseNodeInfo(int id, int info) {
-		HeapNode temp = findNodeWithId(id);
+		ArrayNode temp = position[id];
 		temp.info = info;
 	}
 
 	@Override
 	public void initializeData(int[] distance) {
 		numOfNode = distance.length;
-		node = new HeapNode[numOfNode];
+		node = new ArrayNode[numOfNode];
+		position = new ArrayNode[200000];
 		
 		for (int i = 0; i < numOfNode; i++) {
-			node[i] = new HeapNode(i , distance[i]);
+			node[i] = new ArrayNode(i , distance[i]);
+			position[i] = node[i];
 		}
 		
 	}
 
+	@Override
+	public int getSize() {
+		return numOfNode;
+	}
+	
 	@Override
 	public boolean isEmpty() {
 		return (numOfNode == 0);
 	}
 
 	
-	private HeapNode findNodeWithId(int id) {
-		for (int i = 0; i < numOfNode; i++) {
-			if (node[i].id == id) {
-				return node[i];
-			}
-		}
-		return null;
-	}
+	
 	
 	//tim vi tri cua ( node.id = id) trong mang
 	private int findPosition(int id) {
@@ -67,9 +70,10 @@ public class Array implements HeapInterface<HeapNode> {
 		return -1;
 	}
 	
-	public void delete(int id) { // xoa node co id = id
-
+	// xoa node co id = id
+	public void delete(int id) { 
 		int save = findPosition(id);
+		
 		if (save == numOfNode - 1) {
 			node [save] = null;
 			numOfNode--;
@@ -85,9 +89,6 @@ public class Array implements HeapInterface<HeapNode> {
 		numOfNode--;
 	}
 
-	@Override
-	public int getSize() {
-		return numOfNode;
-	}
+
 
 }
